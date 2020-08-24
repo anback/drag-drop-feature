@@ -1,75 +1,81 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import MaterialTable from "material-table";
-import MTableBodyRow from 'material-table/components/m-table-body-row'
+import MTableBodyRow from 'material-table/dist/components/m-table-body-row'
 
-const reodering = () => {}
+const reodering = console.log
  
-export default class App extends Component {
-  render() {
-    const DragState = { row: -1} //current row dropIndex: -1 // drag target 
-    return (
-      <div style={{ maxWidth: "100%" }}>
-        <MaterialTable
+export default () => {
+  const [dragState, setDragState] = useState(-1)
+  const [dropIndex, setDropIndex] = useState(-1)
 
-            components={{
-                Row: props => (
-                    <MTableBodyRow {...props}
-                        draggable="true"
-                        onDragStart={(e) => {
-                            console.log('onDragStart');
-                            DragState.row = props.data.tableData.id
+  return (
+    <div style={{ maxWidth: "100%" }}>
+      <MaterialTable
+          components={{
+              Row: props => (
+                  <MTableBodyRow {...props}
+                      draggable="true"
+                      onDragStart={(e) => {
+                          console.log('onDragStart');
+                          setDragState(props.data.tableData.id)
+                      }}
 
-                        }}
+                      onDragEnter={e => {
+                          e.preventDefault();
+                          console.log(`onDragEnter`, 'dragState', dragState, 'dropIndex', dropIndex, 'props.data.tableData.id', props.data.tableData.id )
+                          if( props.data.tableData.id !== dragState) setDropIndex(props.data.tableData.id)                         
+                      }}
 
-                        onDragEnter={e => {
-                            e.preventDefault();
-                            if( props.data.tableData.id !== DragState.row){
-                                DragState.dropIndex = props.data.tableData.id ;
+                      onDragEnd={(e) => {
+                        console.log('onDragEnd')
+                        e.preventDefault();
+                        if(dropIndex !== -1) reodering({dragState, dropIndex})
+                        setDragState(-1)
+                        setDropIndex(-1)
+                      }}
+                  />
 
-                            }                                                  
-                        }}
+              )
+          }}
 
-                        onDragEnd={(e) => {
-                            console.log(`onDragEnd`);
-                            if(DragState.dropIndex != -1){
-                                reodering({index: DragState.row, dropIndex: DragState.dropIndex})
-                            }
-                            DragState.row = -1;
-                            DragState.dropIndex = -1;
-
-                        }}
-                    />
-
-                )
-            }}
-
-          columns={[
-            { title: "Adı", field: "name" },
-            { title: "Soyadı", field: "surname" },
-            { title: "Doğum Yılı", field: "birthYear", type: "numeric" },
-            {
-              title: "Doğum Yeri",
-              field: "birthCity",
-              lookup: { 34: "İstanbul", 63: "Şanlıurfa" },
-            },
-          ]}
-          data={[
-            {
-              name: "Mehmet",
+        columns={[
+          { title: "Adı", field: "name" },
+          { title: "Soyadı", field: "surname" },
+          { title: "Doğum Yılı", field: "birthYear", type: "numeric" },
+          {
+            title: "Doğum Yeri",
+            field: "birthCity",
+            lookup: { 34: "İstanbul", 63: "Şanlıurfa" },
+          },
+        ]}
+        data={[
+          {
+            name: "Mehmet",
+            surname: "Baran",
+            birthYear: 1987,
+            birthCity: 63,
+          },
+          {
+              name: "Mehmet 2",
               surname: "Baran",
-              birthYear: 1987,
+              birthYear: 1988,
               birthCity: 63,
-            },
-            {
-                name: "Mehmet 2",
-                surname: "Baran",
-                birthYear: 1987,
-                birthCity: 63,
-            },
-          ]}
-          title="Demo Title"
-        />
-      </div>
-    );
-  }
+          },
+          {
+            name: "Mehmet 2",
+            surname: "Baran",
+            birthYear: 1989,
+            birthCity: 63,
+        },
+        {
+          name: "Mehmet 2",
+          surname: "Baran",
+          birthYear: 1990,
+          birthCity: 63,
+        }
+        ]}
+        title="Demo Title"
+      />
+    </div>
+  );
 }
