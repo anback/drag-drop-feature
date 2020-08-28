@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import logo from './logo.svg';
 import './App.css';
+import DragDropMaterialTableExperimental from './DragDropMaterialTableExperimental'
 import DragDropMaterialTable from './DragDropMaterialTable'
 
 class App extends Component {
